@@ -2,13 +2,17 @@ name: Release Tauri App
 
 on:
   push:
-    branches: [ master, main ] # Start automatisch bij ELKE push naar master of main
-  workflow_dispatch: # Maakt handmatig starten via GitHub ook mogelijk
+    branches: [ master, main ] # Triggered automatically on every push to master or main
+  workflow_dispatch: # Allows manual execution from the GitHub UI
+
+# Enforce Node.js 24 compliance across the platform runners
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   release:
     permissions:
-      contents: write # Verplicht om bestanden naar de Release-pagina te mogen schrijven
+      contents: write # Required to publish assets to the Release page
     
     strategy:
       fail-fast: false
@@ -23,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24 # Modern Node 24 environment
           cache: 'npm'
 
       - name: Install Rust stable
@@ -34,7 +38,7 @@ jobs:
         with:
           workspaces: './src-tauri -> target'
 
-      # Linux-specifieke dependencies installeren (WebKit, GTK en RPM builder)
+      # Linux-specific compilation libraries
       - name: Install Linux build dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -44,17 +48,19 @@ jobs:
       - name: Install node dependencies
         run: npm ci
 
-      # De Tauri Action die bouwt én de binaries los koppelt aan een "latest" release
+      # The Tauri Action configured to explicitly compile and attach only the clean target binaries
       - name: Build and Release Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # FIX: We forceren een vaste tag-naam genaamd 'latest'
           tagName: latest
           releaseName: 'Latest Continuous Build'
           releaseBody: 'This release always contains the separate download binaries from the latest commit on your master/main branch.'
-          # Zorgt ervoor dat bestaande binaries bij elke push netjes worden overschreven met de nieuwste versie
           overwrite: true
           releaseDraft: false
           prerelease: false
+          includeRelease: true
+          includeDebug: false
+          includeAppImage: false # Strips AppImage maps
+          artifacts: "deb,rpm,nsis,dmg" # Force uploads ONLY for .deb, .rpm, .exe and .dmg
