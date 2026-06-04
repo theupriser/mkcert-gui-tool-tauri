@@ -27,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24 # Modern Node 24 environment
+          node-version: 24
           cache: 'npm'
 
       - name: Install Rust stable
@@ -45,11 +45,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libsoup-3.0-dev libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev rpm
 
-      # FIX: Changed from 'npm ci' to 'npm install' to dynamically resolve lockfile dependency mismatches
       - name: Install node dependencies
         run: npm install
 
-      # The Tauri Action configured to explicitly compile and attach only the clean target binaries
+      # The Tauri Action configured properly for Tauri v2 and explicit asset filtering
       - name: Build and Release Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
@@ -58,10 +57,11 @@ jobs:
           tagName: latest
           releaseName: 'Latest Continuous Build'
           releaseBody: 'This release always contains the separate download binaries from the latest commit on your master/main branch.'
-          overwrite: true
           releaseDraft: false
           prerelease: false
           includeRelease: true
           includeDebug: false
-          includeAppImage: false # Strips AppImage maps
-          artifacts: "deb,rpm,nsis,dmg" # Force uploads ONLY for .deb, .rpm, .exe and .dmg
+          # FIX: Vertelt Tauri dat hij 'npm run build' moet gebruiken in plaats van het missende tauri-script
+          tauriScript: npm run build --
+          # FIX: Filtert via een regex patroon direct alleen de gewenste binaries (.deb, .rpm, .exe, .dmg) uit de upload
+          assetNamePattern: '^[^.]+\.(deb|rpm|exe|dmg|msi)$'
