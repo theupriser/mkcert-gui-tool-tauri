@@ -1,0 +1,25 @@
+[package]
+name = "app"
+version = "1.0.0" # Je kunt de versie hier eventueel verhogen naar 1.0.0
+description = "A Tauri App"
+authors = ["Rick Peters <rick@example.com>"] # Sla hier je eigen gegevens op
+edition = "2021"
+rust-version = "1.71"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.0-rc.13", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+tauri = { version = "2.0.0-rc.17", features = [] }
+tauri-plugin-log = "2.0.0-rc"
+tauri-plugin-dialog = "2.0.0-beta.0"
+tokio = { version = "1.52.3", features = ["sync"] }

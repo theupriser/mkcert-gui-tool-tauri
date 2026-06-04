@@ -1,0 +1,31 @@
+{
+  "productName": "mkcert-gui-tool",
+  "version": "1.0.0",
+  "identifier": "com.mkcert.gui.tool",
+  "app": {
+    "withGlobalTauri": true, 
+    "windows": [
+      {
+        "title": "MKCert Auto-Generator",
+        "width": 600,
+        "height": 720,
+        "decorations": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "build": {
+    "beforeDevCommand": "",
+    "beforeBuildCommand": "",
+    "frontendDist": "../src"
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["deb", "rpm", "nsis", "appimage"],
+    "category": "DeveloperTool",
+    "shortDescription": "A tiny cross-platform local SSL certificate manager using mkcert",
+    "longDescription": "An efficient alternative to Electron that utilizes systemic engine layouts to trust, generate, and track local workspace certificate records automatically."
+  }
+}

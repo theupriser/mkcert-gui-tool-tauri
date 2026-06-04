@@ -1,0 +1,60 @@
+name: Release Tauri App
+
+on:
+  push:
+    branches: [ master, main ] # Start automatisch bij ELKE push naar master of main
+  workflow_dispatch: # Maakt handmatig starten via GitHub ook mogelijk
+
+jobs:
+  release:
+    permissions:
+      contents: write # Verplicht om bestanden naar de Release-pagina te mogen schrijven
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      # Linux-specifieke dependencies installeren (WebKit, GTK en RPM builder)
+      - name: Install Linux build dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libsoup-3.0-dev libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev rpm
+
+      - name: Install node dependencies
+        run: npm ci
+
+      # De Tauri Action die bouwt én de binaries los koppelt aan een "latest" release
+      - name: Build and Release Tauri App
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # FIX: We forceren een vaste tag-naam genaamd 'latest'
+          tagName: latest
+          releaseName: 'Latest Continuous Build'
+          releaseBody: 'This release always contains the separate download binaries from the latest commit on your master/main branch.'
+          # Zorgt ervoor dat bestaande binaries bij elke push netjes worden overschreven met de nieuwste versie
+          overwrite: true
+          releaseDraft: false
+          prerelease: false
