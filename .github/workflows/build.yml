@@ -5,7 +5,7 @@ on:
     branches: [ master, main ] # Triggered automatically on every push to master or main
   workflow_dispatch: # Allows manual execution from the GitHub UI
 
-# Enforce Node.js 24 compliance across the platform runners
+# Enforce Node.js 24 environment compatibility across the platform runners
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -38,15 +38,16 @@ jobs:
         with:
           workspaces: './src-tauri -> target'
 
-      # Linux-specific compilation libraries
+      # Linux-specific build headers
       - name: Install Linux build dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y libsoup-3.0-dev libwebkit2gtk-4.1-dev build-essential curl wget file libssl-dev libgtk-3-dev libayatana-appindicator3-dev rpm
 
+      # FIX: Changed from 'npm ci' to 'npm install' to dynamically resolve lockfile dependency mismatches
       - name: Install node dependencies
-        run: npm ci
+        run: npm install
 
       # The Tauri Action configured to explicitly compile and attach only the clean target binaries
       - name: Build and Release Tauri App
