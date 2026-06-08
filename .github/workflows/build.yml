@@ -2,18 +2,17 @@ name: Release Tauri App
 
 on:
   push:
-    branches: [ master, main ] # Triggered automatically on every push to master or main
-  workflow_dispatch: # Allows manual execution from the GitHub UI
+    branches: [ master, main ] # Automatisch bij elke push naar master of main
+  workflow_dispatch: # Handmatig starten vanuit de GitHub UI
 
-# Enforce Node.js 24 environment compatibility across the platform runners
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   release:
     permissions:
-      contents: write # Required to publish assets to the Release page
-    
+      contents: write # Vereist om bestanden aan de Release toe te voegen
+
     strategy:
       fail-fast: false
       matrix:
@@ -30,15 +29,17 @@ jobs:
           node-version: 24
           cache: 'npm'
 
+      # Installeer Rust
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
+      # Rust cache om bouwtijden drastisch te verkorten
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './src-tauri -> target'
 
-      # Linux-specific build headers
+      # Linux build dependencies voor Tauri v2 + RPM ondersteuning
       - name: Install Linux build dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -48,20 +49,17 @@ jobs:
       - name: Install node dependencies
         run: npm install
 
-      # The Tauri Action configured properly for Tauri v2 and explicit asset filtering
+      # Bouw en release de applicatie via de officiële Tauri actie
       - name: Build and Release Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: latest
+          # OPLOSSING 1: Genereert een unieke tag per commit (bijv. dev-c4f3a1) om loops te voorkomen
+          tagName: dev-${{ github.sha }}
           releaseName: 'Latest Continuous Build'
-          releaseBody: 'This release always contains the separate download binaries from the latest commit on your master/main branch.'
+          releaseBody: 'This release contains the separate download binaries from the latest commit on your main/master branch.'
           releaseDraft: false
-          prerelease: false
-          includeRelease: true
-          includeDebug: false
-          # FIX: Vertelt Tauri dat hij 'npm run build' moet gebruiken in plaats van het missende tauri-script
-          tauriScript: npm run build --
-          # FIX: Filtert via een regex patroon direct alleen de gewenste binaries (.deb, .rpm, .exe, .dmg) uit de upload
-          assetNamePattern: '^[^.]+\.(deb|rpm|exe|dmg|msi)$'
+          prerelease: true # Gemarkeerd als pre-release omdat het een automatische tussentijdse build is
+          # OPLOSSING 2: Juiste configuratie voor npm projecten
+          packageManager: npm
