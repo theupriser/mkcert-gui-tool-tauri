@@ -30,7 +30,7 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "targets": ["deb", "rpm", "nsis", "msi", "dmg"],
+    "targets": ["deb", "rpm", "nsis", "dmg"],
     "category": "DeveloperTool",
     "shortDescription": "A tiny cross-platform local SSL certificate manager using mkcert",
     "longDescription": "An efficient alternative to Electron that utilizes systemic engine layouts to trust, generate, and track local workspace certificate records automatically."
