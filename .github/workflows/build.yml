@@ -55,11 +55,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # OPLOSSING 1: Genereert een unieke tag per commit (bijv. dev-c4f3a1) om loops te voorkomen
+          # Genereert een unieke tag per commit om release-overschrijf-fouten te voorkomen
           tagName: dev-${{ github.sha }}
           releaseName: 'Latest Continuous Build'
           releaseBody: 'This release contains the separate download binaries from the latest commit on your main/master branch.'
           releaseDraft: false
-          prerelease: true # Gemarkeerd als pre-release omdat het een automatische tussentijdse build is
-          # OPLOSSING 2: Juiste configuratie voor npm projecten
-          packageManager: npm
+          prerelease: true
+
+          # Forceert de runner om npx tauri build te gebruiken in plaats van npm run tauri build
+          tauriScript: npx tauri
