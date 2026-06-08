@@ -2,8 +2,8 @@ name: Release Tauri App
 
 on:
   push:
-    branches: [ master, main ] # Automatisch bij elke push naar master of main
-  workflow_dispatch: # Handmatig starten vanuit de GitHub UI
+    branches: [ master, main ] # Start automatisch bij elke push naar master of main
+  workflow_dispatch: # Hiermee kun je de build handmatig starten via de GitHub UI
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -11,11 +11,12 @@ env:
 jobs:
   release:
     permissions:
-      contents: write # Vereist om bestanden aan de Release toe te voegen
+      contents: write # Cruciaal om de installers naar de Release-pagina te kunnen uploaden
 
     strategy:
       fail-fast: false
       matrix:
+        # Bouwt parallel op Linux, Windows en macOS
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
@@ -29,17 +30,17 @@ jobs:
           node-version: 24
           cache: 'npm'
 
-      # Installeer Rust
+      # Installeer de stabiele Rust toolchain
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
-      # Rust cache om bouwtijden drastisch te verkorten
+      # Rust cache om de bouwtijd bij volgende pushes drastisch te verkorten
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
           workspaces: './src-tauri -> target'
 
-      # Linux build dependencies voor Tauri v2 + RPM ondersteuning
+      # Systeembestanden die ALLEEN op Linux nodig zijn (Tauri v2 + RPM support)
       - name: Install Linux build dependencies
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -49,18 +50,21 @@ jobs:
       - name: Install node dependencies
         run: npm install
 
-      # Bouw en release de applicatie via de officiële Tauri actie
+      # De officiële Tauri actie die de builds uitvoert en uploadt naar GitHub Releases
       - name: Build and Release Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          # Genereert een unieke tag per commit om release-overschrijf-fouten te voorkomen
+          # Genereert een unieke release tag op basis van de commit-hash (voorkomt foutloops)
           tagName: dev-${{ github.sha }}
           releaseName: 'Latest Continuous Build'
-          releaseBody: 'This release contains the separate download binaries from the latest commit on your main/master branch.'
+          releaseBody: 'This release contains the standalone installation binaries from the latest commit.'
           releaseDraft: false
-          prerelease: true
+          prerelease: true # Gemarkeerd als pre-release omdat het een automatische tussentijdse build is
 
-          # Forceert de runner om npx tauri build te gebruiken in plaats van npm run tauri build
+          # Forceert het gebruik van 'npx tauri build' in plaats van het ontbrekende npm-script
           tauriScript: npx tauri
+
+          # FIX: Zorgt ervoor dat de actie op Windows en macOS in de juiste 'mkcert-gui-tool' mappen zoekt naar de installers
+          appName: mkcert-gui-tool
