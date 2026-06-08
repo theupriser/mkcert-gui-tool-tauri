@@ -1,7 +1,7 @@
 {
   "productName": "mkcert-gui-tool",
   "version": "1.0.0",
-  "identifier": "com.mkcert.gui.tool",
+  "identifier": "com.theupriser.mkcertguitool",
   "app": {
     "withGlobalTauri": true, 
     "windows": [
@@ -30,7 +30,7 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "targets": ["deb", "rpm"],
+    "targets": ["deb", "rpm", "nsis", "msi", "dmg"],
     "category": "DeveloperTool",
     "shortDescription": "A tiny cross-platform local SSL certificate manager using mkcert",
     "longDescription": "An efficient alternative to Electron that utilizes systemic engine layouts to trust, generate, and track local workspace certificate records automatically."

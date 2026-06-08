@@ -63,8 +63,5 @@ jobs:
           releaseDraft: false
           prerelease: true # Gemarkeerd als pre-release omdat het een automatische tussentijdse build is
 
-          # Forceert het gebruik van 'npx tauri build' in plaats van het ontbrekende npm-script
-          tauriScript: npx tauri
-
-          # FIX: Zorgt ervoor dat de actie op Windows en macOS in de juiste 'mkcert-gui-tool' mappen zoekt naar de installers
-          appName: mkcert-gui-tool
+          # Voert 'npm run tauri build' uit via het script in je package.json
+          tauriScript: npm run tauri
