@@ -1,6 +1,6 @@
 {
   "name": "mkcert-tauri-tool",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Lightweight cross-platform mkcert GUI utility",
   "main": "src/index.html",
   "type": "module",
