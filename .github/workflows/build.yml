@@ -47,6 +47,10 @@ jobs:
       - name: Install node dependencies
         run: npm install
 
+      - name: Read release version
+        id: version
+        run: echo "version=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
+
       # Bouw de app direct via Tauri CLI (Geen risico op 'No artifacts found' fouten)
       - name: Build Tauri App
         run: npm run tauri build
@@ -57,11 +61,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: dev-${{ github.sha }}
-          name: 'Latest Continuous Build'
+          tag_name: V${{ steps.version.outputs.version }}
+          name: MKCert Auto Generator V${{ steps.version.outputs.version }}
           body: 'This release contains the separate download binaries from the latest commit.'
           draft: false
           prerelease: true
+          make_latest: true
           # Dit zoekt diep in de build-map en uploadt alle installatiebestanden direct
           files: |
             src-tauri/target/release/bundle/deb/*.deb

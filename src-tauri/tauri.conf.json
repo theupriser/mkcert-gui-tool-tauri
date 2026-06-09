@@ -1,6 +1,6 @@
 {
   "productName": "mkcert-gui-tool",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "identifier": "com.theupriser.mkcertguitool",
   "app": {
     "withGlobalTauri": true, 

@@ -1,6 +1,6 @@
 [package]
 name = "app"
-version = "1.0.0" # Je kunt de versie hier eventueel verhogen naar 1.0.0
+version = "1.1.0" # Je kunt de versie hier eventueel verhogen naar 1.0.0
 description = "A Tauri App"
 authors = ["Rick Peters <rick@example.com>"] # Sla hier je eigen gegevens op
 edition = "2021"
