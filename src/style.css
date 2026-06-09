@@ -1,20 +1,177 @@
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; background: #f5f5f7; }
-.status-banner { padding: 12px 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; font-size: 14px; border-bottom: 1px solid transparent; }
-.status-success { background: #d4edda; color: #155724; border-color: #c3e6cb; }
-.status-danger { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
-.app-content { padding: 20px; }
-h2 { color: #333; margin-top: 0; }
-label { font-weight: bold; display: block; margin-top: 15px; margin-bottom: 8px; }
-textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; resize: vertical; box-sizing: border-box; }
-.dir-container { display: flex; gap: 10px; }
-input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; background: #e9e9eb; }
-.checkbox-container { display: flex; align-items: center; gap: 10px; margin-top: 18px; background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #ccc; }
-.checkbox-container input { width: 18px; height: 18px; cursor: pointer; }
-.checkbox-container label { margin: 0; font-weight: normal; cursor: pointer; }
-.btn-secondary { background: #e5e5ea; color: #333; border: 1px solid #ccc; padding: 10px 15px; font-size: 14px; border-radius: 6px; cursor: pointer; }
-.btn-secondary:hover { background: #d1d1d6; }
-.btn-danger { background: #dc3545; color: white; border: none; padding: 6px 12px; font-size: 12px; border-radius: 4px; cursor: pointer; }
-.btn-danger:hover { background: #bd2130; }
-.btn-primary { background: #007aff; color: white; border: none; padding: 12px 20px; font-size: 14px; border-radius: 6px; cursor: pointer; margin-top: 20px; width: 100%; font-weight: bold; }
-.btn-primary:hover { background: #0063cc; }
-pre { background: #222; color: #00ff00; padding: 15px; border-radius: 6px; overflow-x: auto; max-height: 140px; font-size: 12px; margin-top: 15px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f5f5f7;
+}
+
+.status-banner {
+  padding: 12px 20px;
+  font-weight: bold;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid transparent;
+}
+
+.status-text {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.status-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.status-success {
+  background: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.status-danger {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+.app-content {
+  padding: 20px;
+}
+
+h2 {
+  color: #333;
+  margin-top: 0;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 8px;
+}
+
+textarea {
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.dir-container {
+  display: flex;
+  gap: 10px;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #e9e9eb;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.checkbox-container input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkbox-container label {
+  margin: 0;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e5e5ea;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #d1d1d6;
+}
+
+.status-banner .btn-secondary,
+.status-banner .btn-danger {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.status-banner .btn-secondary:hover,
+.status-banner .btn-danger:hover {
+  background: #1f1f1f;
+}
+
+.btn-primary {
+  background: #007aff;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  width: 100%;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: #0063cc;
+}
+
+pre {
+  background: #222;
+  color: #00ff00;
+  padding: 15px;
+  border-radius: 6px;
+  overflow-x: auto;
+  max-height: 140px;
+  font-size: 12px;
+  margin-top: 15px;
+}
+
+@media (max-width: 640px) {
+  .status-banner {
+    gap: 8px;
+  }
+
+  .status-text {
+    font-size: 13px;
+  }
+
+  .status-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

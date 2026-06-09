@@ -24,6 +24,11 @@ pub fn install_root_ca() -> serde_json::Value {
 }
 
 #[tauri::command]
+pub fn open_root_ca_folder() -> serde_json::Value {
+    mkcert::open_root_ca_folder()
+}
+
+#[tauri::command]
 pub async fn select_directory(app_handle: tauri::AppHandle) -> Option<String> {
     use tauri_plugin_dialog::DialogExt;
     

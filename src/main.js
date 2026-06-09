@@ -3,6 +3,7 @@ const { invoke } = window.__TAURI__.core;
 const statusBanner = document.getElementById('status-banner');
 const statusText = document.getElementById('status-text');
 const btnInstallCa = document.getElementById('btn-install-ca');
+const btnOpenCaFolder = document.getElementById('btn-open-ca-folder');
 const btnBrowse = document.getElementById('btn-browse');
 const btnGenerate = document.getElementById('btn-generate');
 const domainsInput = document.getElementById('domains');
@@ -39,6 +40,7 @@ async function checkCAStatus() {
     if (status.installed) {
       statusBanner.className = 'status-banner status-success';
       statusText.innerText = '✅ mkcert & Root CA are successfully installed and trusted.';
+      btnOpenCaFolder.style.display = 'inline-flex';
       btnInstallCa.style.display = 'none';
       btnGenerate.disabled = false;
       btnGenerate.style.opacity = '1';
@@ -46,6 +48,7 @@ async function checkCAStatus() {
     } else if (status.missing_binary) {
       statusBanner.className = 'status-banner status-danger';
       statusText.innerText = status.error;
+      btnOpenCaFolder.style.display = 'none';
       btnInstallCa.style.display = 'none';
       btnGenerate.disabled = true;
       btnGenerate.style.opacity = '0.5';
@@ -53,6 +56,7 @@ async function checkCAStatus() {
     } else {
       statusBanner.className = 'status-banner status-danger';
       statusText.innerText = '❌ Local Root CA is NOT installed or trusted!';
+      btnOpenCaFolder.style.display = 'inline-flex';
       btnInstallCa.style.display = 'block';
       btnGenerate.disabled = false;
       btnGenerate.style.opacity = '1';
@@ -74,6 +78,20 @@ btnInstallCa.addEventListener('click', async () => {
       checkCAStatus();
     } else { logOutput.innerText = `❌ Installation failed:\n\n${result.message}`; }
   } catch (e) { logOutput.innerText = `❌ Error: ${e}`; }
+});
+
+btnOpenCaFolder.addEventListener('click', async () => {
+  logOutput.innerText = 'Opening mkcert root certificate folder...';
+  try {
+    const result = await invoke('open_root_ca_folder');
+    if (result.success) {
+      logOutput.innerText = `✅ ${result.message}`;
+    } else {
+      logOutput.innerText = `❌ Could not open root certificate folder:\n\n${result.message}`;
+    }
+  } catch (e) {
+    logOutput.innerText = `❌ Error opening root certificate folder: ${e}`;
+  }
 });
 
 btnBrowse.addEventListener('click', async () => {

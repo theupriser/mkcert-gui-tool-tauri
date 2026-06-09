@@ -40,6 +40,7 @@ pub fn run() {
             commands::save_settings,
             commands::check_root_ca,
             commands::install_root_ca,
+            commands::open_root_ca_folder,
             commands::select_directory,
             commands::generate_certs
         ])
